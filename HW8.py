@@ -1,7 +1,7 @@
-# Your name: 
-# Your student id:
-# Your email:
-# List who you have worked with on this homework:
+# Your name: Armaan Grewal
+# Your student id: 5575-6195
+# Your email: armaang@umich.edu
+# List who you have worked with on this homework: N/A
 
 import matplotlib.pyplot as plt
 import os
@@ -15,6 +15,30 @@ def load_rest_data(db):
     and each inner key is a dictionary, where the key:value pairs should be the category, 
     building, and rating for the restaurant.
     """
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path+'/'+db)
+    cur = conn.cursor()
+    d = {}
+    cur.execute('SELECT * FROM restaurants')
+    rows = cur.fetchall()
+    for row in rows:
+        d[row[1]] = {}
+        
+        #category
+        cur.execute("SELECT categories.category FROM restaurants JOIN categories ON restaurants.category_id = categories.id WHERE restaurants.name = ?", (row[1],))
+        category = cur.fetchone()
+        for cat in category:
+            d[row[1]]["category"] = cat
+
+        #building
+        cur.execute("SELECT buildings.building FROM restaurants JOIN buildings ON restaurants.building_id = buildings.id WHERE restaurants.name = ?", (row[1],))
+        buildings = cur.fetchone()
+        for building in buildings:
+            d[row[1]]["building"] = building
+
+        #rating
+        d[row[1]]['rating'] = row[4]
+    return d
     pass
 
 def plot_rest_categories(db):
@@ -23,6 +47,7 @@ def plot_rest_categories(db):
     restaurant categories and the values should be the number of restaurants in each category. The function should
     also create a bar chart with restaurant categories and the count of number of restaurants in each category.
     """
+    
     pass
 
 def find_rest_in_building(building_num, db):
@@ -49,6 +74,7 @@ def get_highest_rating(db): #Do this through DB as well
 
 #Try calling your functions here
 def main():
+    print(load_rest_data('South_U_Restaurants.db'))
     pass
 
 class TestHW8(unittest.TestCase):
@@ -99,5 +125,5 @@ class TestHW8(unittest.TestCase):
         self.assertEqual(highest_rating, self.highest_rating)
 
 if __name__ == '__main__':
-    main()
+    #main()
     unittest.main(verbosity=2)
