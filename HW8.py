@@ -51,6 +51,7 @@ def plot_rest_categories(db):
     conn = sqlite3.connect(path+'/'+db)
     cur = conn.cursor()
     d = {}
+    
 
     cur.execute("SELECT category FROM categories")
     categories = cur.fetchall()
@@ -59,7 +60,20 @@ def plot_rest_categories(db):
         count = cur.fetchone()
         for thecount in count:
             d[category[0]] = thecount
+    
+    plt.figure()
+    sorted_d = dict(sorted(d.items(), key = lambda x:x[1], reverse= True))
+    x = list(sorted_d.keys())
+    y = list(sorted_d.values())
 
+    plt.bar(x,y)
+    plt.xlabel('Restaurant Categories')
+    plt.ylabel("Number of Restaurants")
+    plt.title("Types of Restaurants on South University Ave")
+    plt.tight_layout()
+
+    plt.savefig("Bar_graph.png")
+    plt.show()
     return d
     pass
 
@@ -94,6 +108,7 @@ def get_highest_rating(db): #Do this through DB as well
     The second bar chart displays the buildings along the y-axis and their ratings along the x-axis 
     in descending order (by rating).
     """
+
     pass
 
 #Try calling your functions here
